@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Eternal List</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0b0f;
+      color: white;
+    }
+
+    header {
+      background: #15151d;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #292936;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 35px;
+    }
+
+    header p {
+      color: #aaa;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    button {
+      border: none;
+      padding: 11px 16px;
+      border-radius: 8px;
+      background: #5865f2;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .danger {
+      background: #e53935;
+    }
+
+    .secondary {
+      background: #292936;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .section {
+      background: #15151d;
+      border: 1px solid #292936;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    .level {
+      display: flex;
+      gap: 20px;
+      background: #101017;
+      border: 1px solid #292936;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px 0;
+      align-items: center;
+    }
+
+    .level img {
+      width: 180px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #222;
+    }
+
+    .level-info {
+      flex: 1;
+    }
+
+    .rank {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .level h3 {
+      margin: 5px 0;
+      font-size: 22px;
+    }
+
+    .info {
+      color: #bbb;
+      margin: 5px 0;
+    }
+
+    .login-box {
+      max-width: 450px;
+      margin: auto;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 15px;
+      border-radius: 8px;
+      border: 1px solid #343442;
+      background: #0c0c12;
+      color: white;
+      outline: none;
+    }
+
+    label {
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .leaderboard-player {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      margin: 8px 0;
+      background: #101017;
+      border-radius: 9px;
+    }
+
+    .admin-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #15151d;
+      border: 1px solid #333341;
+      border-radius: 14px;
+      padding: 25px;
+      width: 100%;
+      max-width: 550px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      float: right;
+      background: #292936;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 30px;
+    }
+
+    @media (max-width: 650px) {
+      .level {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .level img {
+        width: 100%;
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <h1> ETERNAL LIST</h1>
+
+  <p>Geometry Dash Demon Ranking</p>
+
+  <nav>
+    <button onclick="showSection('levels')">🏆 Demonlist</button>
+    <button onclick="showSection('leaderboard')">📊 Leaderboard</button>
+    <button onclick="showSection('profile')">👤 Perfil</button>
+    <button onclick="showLogin()">🔐 Iniciar sesión</button>
+    <button
+      id="adminButton"
+      class="hidden"
+      onclick="showSection('admin')">
+      ⚙️ Administración
+    </button>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <!-- DEMONLIST -->
+
+  <section id="levels" class="section">
+
+    <h2>🏆 Demonlist</h2>
+
+    <div id="levelsContainer">
+
+      <div class="empty">
+        No hay niveles todavía.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LEADERBOARD -->
+
+  <section id="leaderboard" class="section hidden">
+
+    <h2>📊 Leaderboard</h2>
+
+    <div id="leaderboardContainer">
+
+      <div class="empty">
+        No hay jugadores todavía.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PERFIL -->
+
+  <section id="profile" class="section hidden">
+
+    <h2>👤 Mi perfil</h2>
+
+    <div id="profileContainer">
+
+      <div class="empty">
+        Inicia sesión para ver tu perfil.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ADMIN -->
+
+  <section id="admin" class="section hidden">
+
+    <h2>⚙️ Administración</h2>
+
+    <p>
+      Desde aquí podrás administrar todos los niveles.
+    </p>
+
+    <button onclick="openLevelEditor()">
+      ➕ Añadir nivel
+    </button>
+
+    <div id="adminLevelsContainer"></div>
+
+  </section>
+
+</main>
+
+
+<!-- LOGIN -->
+
+<div id="loginModal" class="modal hidden">
+
+  <div class="modal-content">
+
+    <button class="close" onclick="closeModal('loginModal')">
+      ✕
+    </button>
+
+    <h2>🔐 Iniciar sesión</h2>
+
+    <label>Usuario</label>
+
+    <input
+      id="loginUsername"
+      type="text"
+      placeholder="Tu usuario">
+
+    <label>Contraseña</label>
+
+    <input
+      id="loginPassword"
+      type="password"
+      placeholder="Tu contraseña">
+
+    <button onclick="login()">
+      Iniciar sesión
+    </button>
+
+    <button
+      class="secondary"
+      onclick="showRegister()">
+      Crear cuenta
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- REGISTRO -->
+
+<div id="registerModal" class="modal hidden">
+
+  <div class="modal-content">
+
+    <button
+      class="close"
+      onclick="closeModal('registerModal')">
+      ✕
+    </button>
+
+    <h2>📝 Crear cuenta</h2>
+
+    <label>Usuario</label>
+
+    <input
+      id="registerUsername"
+      type="text"
+      maxlength="20"
+      placeholder="Ej: Player123">
+
+    <label>Contraseña</label>
+
+    <input
+      id="registerPassword"
+      type="password"
+      placeholder="Contraseña">
+
+    <label>País</label>
+
+    <select id="registerCountry">
+
+  <option value="">
+    🌎 Selecciona tu país
+  </option>
+
+  <!-- NORTEAMÉRICA -->
+
+  <option value="CA">🇨🇦 Canadá</option>
+  <option value="US">🇺🇸 Estados Unidos</option>
+  <option value="MX">🇲🇽 México</option>
+
+  <!-- CENTROAMÉRICA -->
+
+  <option value="BZ">🇧🇿 Belice</option>
+  <option value="CR">🇨🇷 Costa Rica</option>
+  <option value="SV">🇸🇻 El Salvador</option>
+  <option value="GT">🇬🇹 Guatemala</option>
+  <option value="HN">🇭🇳 Honduras</option>
+  <option value="NI">🇳🇮 Nicaragua</option>
+  <option value="PA">🇵🇦 Panamá</option>
+
+  <!-- CARIBE -->
+
+  <option value="AG">🇦🇬 Antigua y Barbuda</option>
+  <option value="BS">🇧🇸 Bahamas</option>
+  <option value="BB">🇧🇧 Barbados</option>
+  <option value="CU">🇨🇺 Cuba</option>
+  <option value="DM">🇩🇲 Dominica</option>
+  <option value="DO">🇩🇴 República Dominicana</option>
+  <option value="GD">🇬🇩 Granada</option>
+  <option value="HT">🇭🇹 Haití</option>
+  <option value="JM">🇯🇲 Jamaica</option>
+  <option value="KN">🇰🇳 San Cristóbal y Nieves</option>
+  <option value="LC">🇱🇨 Santa Lucía</option>
+  <option value="VC">🇻🇨 San Vicente y las Granadinas</option>
+  <option value="TT">🇹🇹 Trinidad y Tobago</option>
+
+  <!-- SUDAMÉRICA -->
+
+  <option value="AR">🇦🇷 Argentina</option>
+  <option value="BO">🇧🇴 Bolivia</option>
+  <option value="BR">🇧🇷 Brasil</option>
+  <option value="CL">🇨🇱 Chile</option>
+  <option value="CO">🇨🇴 Colombia</option>
+  <option value="EC">🇪🇨 Ecuador</option>
+  <option value="GY">🇬🇾 Guyana</option>
+  <option value="PY">🇵🇾 Paraguay</option>
+  <option value="PE">🇵🇪 Perú</option>
+  <option value="SR">🇸🇷 Surinam</option>
+  <option value="UY">🇺🇾 Uruguay</option>
+  <option value="VE">🇻🇪 Venezuela</option>
+
+  <!-- EUROPA -->
+
+  <option value="ES">🇪🇸 España</option>
+  <option value="PT">🇵🇹 Portugal</option>
+  <option value="FR">🇫🇷 Francia</option>
+  <option value="DE">🇩🇪 Alemania</option>
+  <option value="IT">🇮🇹 Italia</option>
+  <option value="GB">🇬🇧 Reino Unido</option>
+  <option value="NL">🇳🇱 Países Bajos</option>
+  <option value="BE">🇧🇪 Bélgica</option>
+  <option value="CH">🇨🇭 Suiza</option>
+  <option value="AT">🇦🇹 Austria</option>
+  <option value="SE">🇸🇪 Suecia</option>
+  <option value="NO">🇳🇴 Noruega</option>
+  <option value="DK">🇩🇰 Dinamarca</option>
+  <option value="FI">🇫🇮 Finlandia</option>
+  <option value="PL">🇵🇱 Polonia</option>
+  <option value="CZ">🇨🇿 República Checa</option>
+  <option value="IE">🇮🇪 Irlanda</option>
+
+    </select>
+      
+
+    </select>
+
+    <button onclick="register()">
+      Crear cuenta
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- EDITOR DE NIVELES -->
+
+<div id="levelModal" class="modal hidden">
+
+  <div class="modal-content">
+
+    <button
+      class="close"
+      onclick="closeModal('levelModal')">
+      ✕
+    </button>
+
+    <h2 id="levelModalTitle">
+      ➕ Añadir nivel
+    </h2>
+
+    <label>Nombre del nivel</label>
+
+    <input
+      id="levelName"
+      type="text"
+      placeholder="Ej: Silent Clubstep">
+
+    <label>Posición</label>
+
+    <input
+      id="levelPosition"
+      type="number"
+      min="1"
+      placeholder="Ej: 1">
+
+    <label>ID de Geometry Dash</label>
+
+    <input
+      id="levelId"
+      type="text"
+      placeholder="Ej: 12345678">
+
+    <label>Creador</label>
+
+    <input
+      id="levelCreator"
+      type="text"
+      placeholder="Nombre del creador">
+
+    <label>Verificador</label>
+
+    <input
+      id="levelVerifier"
+      type="text"
+      placeholder="Nombre del verificador">
+
+    <label>URL de verificación</label>
+
+    <input
+      id="levelVerification"
+      type="url"
+      placeholder="https://youtube.com/...">
+
+    <label>URL de portada</label>
+
+    <input
+      id="levelImage"
+      type="url"
+      placeholder="https://...">
+
+    <button onclick="saveLevel()">
+      💾 Guardar nivel
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /*
+  ==================================================
+  DATOS TEMPORALES
+  ==================================================
+
+  Más adelante conectaremos esto con Supabase.
+
+  */
+
+  let currentUser = null;
+
+  let editingLevel = null;
+
+  let levels = [];
+
+  let players = [];
+
+
+  /*
+  ==================================================
+  NAVEGACIÓN
+  ==================================================
+  */
+
+  function showSection(section) {
+
+    document
+      .querySelectorAll("main > section")
+      .forEach(element => {
+        element.classList.add("hidden");
+      });
+
+    document
+      .getElementById(section)
+      .classList.remove("hidden");
+
+    if (section === "leaderboard") {
+      loadLeaderboard();
+    }
+
+    if (section === "profile") {
+      loadProfile();
+    }
+
+    if (section === "admin") {
+      loadAdminLevels();
+    }
+
+  }
+
+
+  /*
+  ==================================================
+  MODALES
+  ==================================================
+  */
+
+  function showLogin() {
+
+    closeModal("registerModal");
+
+    document
+      .getElementById("loginModal")
+      .classList.remove("hidden");
+
+  }
+
+
+  function showRegister() {
+
+    closeModal("loginModal");
+
+    document
+      .getElementById("registerModal")
+      .classList.remove("hidden");
+
+  }
+
+
+  function closeModal(id) {
+
+    document
+      .getElementById(id)
+      .classList.add("hidden");
+
+  }
+
+
+  /*
+  ==================================================
+  REGISTRO
+  ==================================================
+  */
+
+  function register() {
+
+    const username =
+      document
+      .getElementById("registerUsername")
+      .value
+      .trim();
+
+    const password =
+      document
+      .getElementById("registerPassword")
+      .value;
+
+    const country =
+      document
+      .getElementById("registerCountry")
+      .value;
+
+
+    if (!username || !password || !country) {
+
+      alert("Completa todos los campos.");
+
+      return;
+
+    }
+
+
+    if (password.length < 6) {
+
+      alert(
+        "La contraseña debe tener mínimo 6 caracteres."
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      "La interfaz está lista. Ahora conectaremos el registro con Supabase."
+    );
+
+  }
+
+
+  /*
+  ==================================================
+  LOGIN
+  ==================================================
+  */
+
+  function login() {
+
+    const username =
+      document
+      .getElementById("loginUsername")
+      .value
+      .trim();
+
+    const password =
+      document
+      .getElementById("loginPassword")
+      .value;
+
+
+    if (!username || !password) {
+
+      alert("Escribe usuario y contraseña.");
+
+      return;
+
+    }
+
+
+    alert(
+      "El sistema de login está listo para conectarse con Supabase."
+    );
+
+  }
+
+
+  /*
+  ==================================================
+  NIVELES
+  ==================================================
+  */
+
+  function renderLevels() {
+
+    const container =
+      document.getElementById(
+        "levelsContainer"
+      );
+
+
+    if (levels.length === 0) {
+
+      container.innerHTML = `
+        <div class="empty">
+          No hay niveles todavía.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    levels
+      .sort(
+        (a,b) =>
+        a.position - b.position
+      );
+
+
+    container.innerHTML =
+      levels.map(level => `
+
+        <div class="level">
+
+          <img
+            src="${level.image || ''}"
+            alt="${level.name}">
+
+          <div class="level-info">
+
+            <div class="rank">
+              #${level.position}
+            </div>
+
+            <h3>
+              ${level.name}
+            </h3>
+
+            <p class="info">
+              🆔 ID: ${level.id}
+            </p>
+
+            <p class="info">
+              👨‍💻 Creador:
+              ${level.creator}
+            </p>
+
+            <p class="info">
+              🛡️ Verificador:
+              ${level.verifier}
+            </p>
+
+            ${
+              level.verification
+              ?
+              `<a
+                href="${level.verification}"
+                target="_blank"
+                style="color:#7289ff;">
+                🔗 Verificación
+              </a>`
+              :
+              ""
+            }
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  /*
+  ==================================================
+  ADMIN
+  ==================================================
+  */
+
+  function openLevelEditor(level = null) {
+
+    editingLevel = level;
+
+    document
+      .getElementById("levelModal")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("levelModalTitle")
+      .textContent =
+      level
+      ? "✏️ Editar nivel"
+      : "➕ Añadir nivel";
+
+
+    document.getElementById("levelName").value =
+      level?.name || "";
+
+    document.getElementById("levelPosition").value =
+      level?.position || "";
+
+    document.getElementById("levelId").value =
+      level?.id || "";
+
+    document.getElementById("levelCreator").value =
+      level?.creator || "";
+
+    document.getElementById("levelVerifier").value =
+      level?.verifier || "";
+
+    document.getElementById("levelVerification").value =
+      level?.verification || "";
+
+    document.getElementById("levelImage").value =
+      level?.image || "";
+
+  }
+
+
+  function saveLevel() {
+
+    const level = {
+
+      name:
+        document.getElementById("levelName").value,
+
+      position:
+        Number(
+          document.getElementById("levelPosition").value
+        ),
+
+      id:
+        document.getElementById("levelId").value,
+
+      creator:
+        document.getElementById("levelCreator").value,
+
+      verifier:
+        document.getElementById("levelVerifier").value,
+
+      verification:
+        document.getElementById("levelVerification").value,
+
+      image:
+        document.getElementById("levelImage").value
+
+    };
+
+
+    if (
+      !level.name ||
+      !level.position ||
+      !level.id ||
+      !level.creator ||
+      !level.verifier
+    ) {
+
+      alert(
+        "Completa todos los campos obligatorios."
+      );
+
+      return;
+
+    }
+
+
+    if (editingLevel) {
+
+      const index =
+        levels.indexOf(editingLevel);
+
+      levels[index] = level;
+
+    } else {
+
+      levels.push(level);
+
+    }
+
+
+    closeModal("levelModal");
+
+    renderLevels();
+
+    loadAdminLevels();
+
+  }
+
+
+  function loadAdminLevels() {
+
+    const container =
+      document.getElementById(
+        "adminLevelsContainer"
+      );
+
+
+    if (levels.length === 0) {
+
+      container.innerHTML = `
+        <div class="empty">
+          No hay niveles.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    levels.sort(
+      (a,b) =>
+      a.position - b.position
+    );
+
+
+    container.innerHTML =
+      levels.map((level,index) => `
+
+        <div class="level">
+
+          <div class="level-info">
+
+            <div class="rank">
+              #${level.position}
+            </div>
+
+            <h3>
+              ${level.name}
+            </h3>
+
+            <p class="info">
+              👨‍💻 ${level.creator}
+              |
+              🛡️ ${level.verifier}
+            </p>
+
+            <div class="admin-actions">
+
+              <button
+                onclick="openLevelEditor(levels[${index}])">
+                ✏️ Editar
+              </button>
+
+              <button
+                class="danger"
+                onclick="deleteLevel(${index})">
+                🗑️ Eliminar
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  function deleteLevel(index) {
+
+    if (
+      confirm(
+        "¿Seguro que quieres eliminar este nivel?"
+      )
+    ) {
+
+      levels.splice(index,1);
+
+      renderLevels();
+
+      loadAdminLevels();
+
+    }
+
+  }
+
+
+  /*
+  ==================================================
+  LEADERBOARD
+  ==================================================
+  */
+
+  function loadLeaderboard() {
+
+    const container =
+      document.getElementById(
+        "leaderboardContainer"
+      );
+
+
+    if (players.length === 0) {
+
+      container.innerHTML = `
+        <div class="empty">
+          No hay jugadores todavía.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    players.sort(
+      (a,b) =>
+      b.records - a.records
+    );
+
+
+    container.innerHTML =
+      players.map((player,index) => `
+
+        <div class="leaderboard-player">
+
+          <span>
+            #${index + 1}
+            ${player.country}
+            ${player.username}
+          </span>
+
+          <strong>
+            ${player.records} records
+          </strong>
+
+        </div>
+
+      `).join("");
+
+  }
+
+
+  /*
+  ==================================================
+  PERFIL
+  ==================================================
+  */
+
+  function loadProfile() {
+
+    const container =
+      document.getElementById(
+        "profileContainer"
+      );
+
+
+    if (!currentUser) {
+
+      container.innerHTML = `
+        <div class="empty">
+          🔐 Inicia sesión para ver tu perfil.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    container.innerHTML = `
+
+      <h2>
+        ${currentUser.username}
+      </h2>
+
+      <p>
+        🌎 País:
+        ${currentUser.country}
+      </p>
+
+      <p>
+        🏆 Records:
+        ${currentUser.records}
+      </p>
+
+      <button
+        class="danger"
+        onclick="logout()">
+        Cerrar sesión
+      </button>
+
+    `;
+
+  }
+
+
+  function logout() {
+
+    currentUser = null;
+
+    document
+      .getElementById("adminButton")
+      .classList.add("hidden");
+
+    loadProfile();
+
+    alert("Sesión cerrada.");
+
+  }
+
+
+  /*
+  ==================================================
+  INICIO
+  ==================================================
+  */
+
+  renderLevels();
+
+</script>
+
+</body>
+  </html>
