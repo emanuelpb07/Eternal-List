@@ -1160,6 +1160,23 @@ const supabase = window.supabase.createClient(
 
   renderLevels();
 
+<script>
+async function probarSupabase() {
+  const { data, error } = await supabase
+    .from("levels")
+    .select("*")
+    .limit(1);
+
+  if (error) {
+    console.error("Error:", error);
+    alert("❌ Supabase no conecta: " + error.message);
+    return;
+  }
+
+  alert("✅ ¡Supabase conectado correctamente!");
+}
+
+probarSupabase();
 </script>
 
 </body>
